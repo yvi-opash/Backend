@@ -1,78 +1,66 @@
-import { Router } from "express";
-import fs from "fs";
-import path from "path";
+import { Router, Request, Response, NextFunction } from "express";
+import User from "../models/User";
 
 const router = Router();
 
-const filePath = path.join(__dirname, "../data/users.json");
-
-
-
-//  GET all users
-router.get("/", (req, res) => {
-  const data = fs.readFileSync(filePath, "utf-8");
-  res.json(JSON.parse(data));
+// GET all
+router.get("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const users = await User.find();
+    res.json(users);
+  } catch (error) {
+    next(error);
+  }
 });
 
-
-
-//  GET single user
-router.get("/:id", (req, res) => {
-  const data = fs.readFileSync(filePath, "utf-8");
-  const users = JSON.parse(data);
-
-  const user = users.find((u: any) => u.id == req.params.id);
-
-  res.json(user);
+// GET single 
+router.get("/:id", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
 });
 
-
-
-//  CREATE user
-router.post("/", (req, res) => {
-  const data = fs.readFileSync(filePath, "utf-8");
-  const users = JSON.parse(data);
-
-  const newUser = {
-    id: Date.now(),
-    ...req.body
-  };
-
-  users.push(newUser);
-
-  fs.writeFileSync(filePath, JSON.stringify(users, null, 2));
-
-  res.json(newUser);
+// CREATE
+router.post("/", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const newUser = new User(req.body);
+    await newUser.save();
+    res.status(201).json(newUser);
+  } catch (error) {
+    next(error);
+  }
 });
 
-
-
-//  UPDATE user
-router.put("/:id", (req, res) => {
-  const data = fs.readFileSync(filePath, "utf-8");
-  const users = JSON.parse(data);
-
-  const index = users.findIndex((u: any) => u.id == req.params.id);
-
-  users[index] = { ...users[index], ...req.body };
-
-  fs.writeFileSync(filePath, JSON.stringify(users, null, 2));
-
-  res.json(users[index]);
+// UPDATE 
+router.put("/:id", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json(user);
+  } catch (error) {
+    next(error);
+  }
 });
 
-
-
-//  DELETE user
-router.delete("/:id", (req, res) => {
-  const data = fs.readFileSync(filePath, "utf-8");
-  let users = JSON.parse(data);
-
-  users = users.filter((u: any) => u.id != req.params.id);
-
-  fs.writeFileSync(filePath, JSON.stringify(users, null, 2));
-
-  res.json({ message: "deleted" });
+// DELETE 
+router.delete("/:id", async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      return res.status(404).json({ error: "User not found" });
+    }
+    res.json({ message: "User deleted" });
+  } catch (error) {
+    next(error);
+  }
 });
 
 export default router;
