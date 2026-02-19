@@ -1,16 +1,15 @@
 import { Router, Request, Response } from "express";
-import User from "../models/User";
-import Post from "../models/Post";
+import { createUser, getUserPosts } from "../services/userService";
 
 const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
-  const user = await User.create(req.body);
+  const user = await createUser(req.body);
   res.json(user);
 });
 
 router.get("/:id/posts", async (req: Request, res: Response) => {
-  const posts = await Post.find({ author: req.params.id }).populate("author");
+  const posts = await getUserPosts(req.params.id);
   res.json(posts);
 });
 

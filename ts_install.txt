@@ -34,3 +34,6 @@ tsconfig.json
 }
 
 npm install -D ts-node-dev
+
+
+"start": "ts-node-dev --respawn --transpile-only src/index.ts"

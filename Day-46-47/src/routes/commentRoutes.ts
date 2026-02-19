@@ -1,10 +1,10 @@
 import { Router, Request, Response } from "express";
-import Comment from "../models/Comment";
+import { createComment } from "../services/commentService";
 
 const router = Router();
 
 router.post("/", async (req: Request, res: Response) => {
-  const comment = await Comment.create(req.body);
+  const comment = await createComment(req.body);
   res.json(comment);
 });
 
