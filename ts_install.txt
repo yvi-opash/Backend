@@ -33,7 +33,8 @@ tsconfig.json
   }
 }
 
-npm install -D ts-node-dev
+
+npm install --save-dev nodemon ts-node
 
 
 "start": "ts-node-dev --respawn --transpile-only src/index.ts"
