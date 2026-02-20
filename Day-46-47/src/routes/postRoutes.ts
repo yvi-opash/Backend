@@ -9,7 +9,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 router.get("/:id", async (req: Request, res: Response) => {
-  const result = await getPostWithComments(req.params.id);
+  const result = await getPostWithComments(String(req.params.id));
   res.json(result);
 });
 

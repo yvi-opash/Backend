@@ -9,7 +9,7 @@ router.post("/", async (req: Request, res: Response) => {
 });
 
 router.get("/:id/posts", async (req: Request, res: Response) => {
-  const posts = await getUserPosts(req.params.id);
+  const posts = await getUserPosts(String(req.params.id));
   res.json(posts);
 });
 
