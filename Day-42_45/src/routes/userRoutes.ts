@@ -32,7 +32,7 @@ router.post("/", async (req: Request, res: Response, next: NextFunction) => {
     const newUser = new User(req.body);
     await newUser.save();
     res.status(201).json(newUser);
-  } catch (error) {
+  } catch (error) { 
     next(error);
   }
 });
@@ -64,3 +64,4 @@ router.delete("/:id", async (req: Request, res: Response, next: NextFunction) =>
 });
 
 export default router;
+
