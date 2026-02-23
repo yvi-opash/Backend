@@ -17,8 +17,6 @@ mongoose
 
 
 
-
-
 app.post("/register", async (req: Request, res: Response) => {
   const { email, password, role } = req.body;
 
